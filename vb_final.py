@@ -1,7 +1,7 @@
 import sqlite3
 from tkinter import *
 from tkinter import messagebox
-
+from tkinter import ttk
 
 def mainwindow():
     main = Tk()
@@ -21,7 +21,7 @@ def startmenu(main):  # login or register
     global mail_ent, pwd_ent, start_frm
     start_frm = Frame(main, bg="#F6E71D")
     start_frm.rowconfigure((0, 1, 2, 3, 4), weight=1)
-    start_frm.columnconfigure((0, 1, ), weight=1)
+    start_frm.columnconfigure((0, 1), weight=1)
     # text
 
     Label(start_frm, image=logo_img, compound=LEFT, text="Vus Booking", font="helvetica 30 bold", fg="black",
@@ -43,7 +43,7 @@ def startmenu(main):  # login or register
     # Button
     Button(start_frm, text="Register", width=12, command=regisframe).grid(
         row=3, column=0, ipady=13, sticky=E)
-    Button(start_frm, text="Login", width=12).grid(
+    Button(start_frm, text="Login", width=12, command=mainMenu).grid(
         row=3, column=1, ipady=13, sticky=W, padx=30)
     start_frm.grid(row=1, column=1, rowspan=3, columnspan=3, sticky=NSEW)
 
@@ -66,10 +66,39 @@ def regisframe():
     fname_ent.grid(row=1, column=1)
     lname_ent = Entry(regis_frm, width=15)
     lname_ent.grid(row=2, column=1)
-    gender_spin = Spinbox(regis_frm, s)
+    gender_spin = Spinbox(regis_frm,)
     regis_frm.grid(row=1, column=1, rowspan=3, columnspan=3, sticky=NSEW)
 
+def mainMenu():
+    print("This main menu")
+    main.title("Vus Booking : MainMenu")
+    main_menu = Frame(main, bg="#F6E71D")
+    main_menu.rowconfigure((0,1,2,3,4,5,6,7,8,9,10),weight=1)
+    main_menu.columnconfigure((0,1),weight=1)
 
+    #Text
+    Label(main_menu, image=logo_img, compound=LEFT, text="Vus Booking", font="helvetica 30 bold", fg="black",
+          bg="#F6E71D").grid(row=0, column=0, columnspan=2)
+    Label(main_menu, text='Select starting point', font="helvetica 16 bold", fg="black",
+          bg="#F6E71D").grid(row=1, column=0, columnspan=2)
+    Label(main_menu, text='Select destination point', font="helvetica 16 bold", fg="black",
+          bg="#F6E71D").grid(row=3, column=0, columnspan=2)
+    #Value Combobox      
+    province = ('Pathum Thani','Nakhon Nayok','Chachoengsao','Samut Songkhram','Nakhon Pathom',
+                'Chon Buri','Rayong','Phetchaburi','Saraburi','Ayutthaya','Ratchaburi')
+    #use Combobox starting point
+    province_select_sp = ttk.Combobox(main_menu, textvariable=selected_province)
+    province_select_sp['values'] = province
+    province_select_sp['state'] = 'readonly'
+    province_select_sp.grid(row=2, column=0, columnspan=2, sticky='n', ipady=5, ipadx=5)
+    
+    #use Combobox destination point
+    province_select_dp = ttk.Combobox(main_menu, textvariable=province)
+    province_select_dp['values'] = province
+    province_select_dp['state'] = 'readonly'
+    province_select_dp.grid(row=4, column=0, columnspan=2, sticky='n', ipady=5, ipadx=5)
+
+    main_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
 w = 600
 h = 750
 main = mainwindow()
@@ -85,6 +114,7 @@ phone_info = StringVar()
 newmail_info = StringVar()
 newpwd_info = StringVar()
 newcfpwd_info = StringVar()
+selected_province = StringVar()
 logo_img = PhotoImage(file="image/logo.png").subsample(3, 3)
 regis_img = PhotoImage(file="image/register.png").subsample(3, 3)
 
