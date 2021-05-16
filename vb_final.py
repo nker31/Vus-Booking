@@ -3,8 +3,7 @@ import sqlite3
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
-
-
+from tkcalendar import *
 
 def createconnection():  # connect to database
     global conn, cursor
@@ -205,7 +204,7 @@ def Profile_Menu(user):
     #set real time
 
     #button
-    Button(profile_menu, text="Booking or But Tickets", width=20,
+    Button(profile_menu, text="Booking or Buy Tickets", width=20,
     command=Booking_Menu).grid(row=2, column=0, columnspan=2, ipady=10)
     Button(profile_menu, text="Edit Profile", width=20,
     command=Edit_profile).grid(row=3, column=0, columnspan=2, ipady=10)
@@ -291,7 +290,7 @@ def Update_data():
 
 def Booking_Menu():
     print("This booking menu")
-    global booking_menu
+    global booking_menu,province_select_sp,province_select_dp,date_button,date_text,date_show
     main.title("Vus Booking : Booking Menu")
     booking_menu = Frame(main, bg="#F6E71D")
     booking_menu.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), weight=1)
@@ -311,14 +310,14 @@ def Booking_Menu():
     
     # use Combobox starting point
     province_select_sp = ttk.Combobox(
-        booking_menu, textvariable=selected_province)
+        booking_menu, textvariable=selected_province_sp)
     province_select_sp['values'] = province
     province_select_sp['state'] = 'readonly'
     province_select_sp.grid(row=2, column=0, columnspan=2,
                             sticky='n', ipady=5, ipadx=5)
 
     # use Combobox destination point
-    province_select_dp = ttk.Combobox(booking_menu, textvariable=province)
+    province_select_dp = ttk.Combobox(booking_menu, textvariable=selected_province_dp)
     province_select_dp['values'] = province
     province_select_dp['state'] = 'readonly'
     province_select_dp.grid(row=4, column=0, columnspan=2,
@@ -326,35 +325,87 @@ def Booking_Menu():
     
     # check buy or booking tickets
     bt_button = Radiobutton(booking_menu, text=tickets_list[0], variable=tickets,
-    value=0, bg="#F6E71D", font="helvetica 16 bold", fg="black")
+    value=1, bg="#F6E71D", font="helvetica 16 bold", fg="black")
     bt_button.grid(row=5, column=0)
 
     bkt_button = Radiobutton(booking_menu, text=tickets_list[1], variable=tickets,
-    value=1, bg="#F6E71D", font="helvetica 16 bold", fg="black")
+    value=2, bg="#F6E71D", font="helvetica 16 bold", fg="black")
     bkt_button.grid(row=5, column=1)
     
     # select how many do you want to buy or booking tickets
     Label(booking_menu, text='Tickets : ', bg="#F6E71D", font="helvetica 16 bold",
     fg="black").grid(row=6, column=0, sticky='e')
-    tk_spin = Spinbox(booking_menu, from_= 0, to = 100, width=8)
+    tk_spin = Spinbox(booking_menu, from_= 0, to = 100, width=8,textvariable=spin_value)
     tk_spin.grid(row=6, column=1, sticky='w')
 
+    #calendar
+    date_button = Button(booking_menu,text="Date",width=10,command=calendar)
+    date_button.grid(row=7,column=0,sticky=E)
+    date_show = Label(booking_menu,text="",textvariable=check_date,bg="#F6E71D")
+    date_show.grid(row=7,column=1,sticky=W,padx=20)
     # Button
-    Button(booking_menu, text='Cancel', width=10, command=cancelbooking).grid(row=7, column=0)
-    Button(booking_menu, text='OK', width=10, command=checkradiobutton).grid(row=7, column=1)
+    Button(booking_menu, text='Cancel', width=10, command=cancelbooking).grid(row=8, column=0)
+    Button(booking_menu, text='OK', width=10, command=checkradiobutton).grid(row=8, column=1)
 
     booking_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
 
 def checkradiobutton():
-    if tickets.get() == 0:
-        messagebox.showinfo("system",'you selected buy tickets')
-        return 0
-    else:
-        messagebox.showinfo('system','you selected booking ticket')
+    print(test_date)
+    if province_select_sp.get() == "":
+        messagebox.showinfo("system",'Please Select starting point.')
+    elif province_select_dp.get() == "":
+        messagebox.showinfo("system",'Please Select destination point.')
+    elif province_select_sp.get() == province_select_dp.get():
+        messagebox.showinfo("system",'Please Select Different place.')
+    elif tickets.get() == 0:
+        messagebox.showinfo("system",'Please Select type tickets.')
+    elif spin_value.get() == "0":
+        messagebox.showinfo("system",'Please Enter the number of your tickets.')
+    elif tickets.get() == 1:
+        messagebox.showinfo("system",'you selected buy tickets.')
         return 1
+    elif tickets.get() == 2:
+        messagebox.showinfo('system','you selected booking ticket.')
+        return 2
+    elif check_date.get() == "":
+        messagebox.showinfo("system",'Please Enter your date.')
+    else :
+        print("I")
+    
+def calendar():
+    global calendar_frame,date,cal
+    print("calendar")
+    calendar_frame = Frame(main, bg="#F6E71D")
+    calendar_frame.rowconfigure((0, 1, 2, 3), weight=1)
+    calendar_frame.columnconfigure((0, 1), weight=1)
+    #calendar
+    cal = Calendar(calendar_frame, selectmode = 'day',year = 2021, month = 5,day = 16)
+    cal.grid(row=0,column=0,columnspan=2,sticky='NEWS',pady=15,padx=15)
+
+    #button
+    Button(calendar_frame, text = "Get Date",command = grad_date).grid(row=2,column=0,columnspan=2)
+    Button(calendar_frame, text = "Cancel",command = cancel_cal).grid(row=3,column=0,columnspan=2)
+
+    
+    calendar_frame.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
+
+def grad_date():
+    global test_date
+    test_date = cal.get_date()
+    check_date.set(cal.get_date())
+    date_show.config(text= ":" + test_date)
+    calendar_frame.destroy()
+
+def cancel_cal():
+    calendar_frame.destroy()
 
 def cancelbooking():
     booking_menu.destroy()
+    selected_province_sp.set("")
+    selected_province_dp.set("")
+    tickets.set(0)
+    spin_value.set(0)
+    check_date.set("")
 
 def Cancel_edit():
     print("cancel edit")
@@ -374,12 +425,18 @@ createconnection()
 main = mainwindow()
 
 # all variables
+test_date = ""
 regis_list = ["Name", "Lastname", "Gender", "Phone num",
               "Email", "Password", "Confirm Password"]
 gender_list = ["-", "Male", "Female", "Other"]
 tickets_list = {0: 'Buy Ticket', 1: 'Booking Ticket'}
 tickets = IntVar()
 tickets.set(0)
+tk_spin = IntVar()
+tk_spin.set(0)
+check_date = StringVar()
+check_date.set("")
+spin_value = StringVar()
 mail_info = StringVar()
 pwd_info = StringVar()
 fname_info = StringVar()
@@ -389,7 +446,8 @@ phone_info = StringVar()
 newmail_info = StringVar()
 newpwd_info = StringVar()
 newcfpwd_info = StringVar()
-selected_province = StringVar()
+selected_province_sp = StringVar()
+selected_province_dp = StringVar()
 logo_img = PhotoImage(
     file="image/logo.png").subsample(3, 3)
 regis_img = PhotoImage(file="image/register.png").subsample(3, 3)
