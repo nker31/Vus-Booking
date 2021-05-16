@@ -1,14 +1,15 @@
+from os import stat_result
 import sqlite3
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 
 
+
 def createconnection():  # connect to database
     global conn, cursor
     conn = sqlite3.connect("vus_db.db")
     cursor = conn.cursor()
-
 
 def mainwindow():
     main = Tk()
@@ -23,7 +24,6 @@ def mainwindow():
 
     return main
 
-
 def startmenu(main):  # login or register
     global mail_ent, pwd_ent, start_frm
     start_frm = Frame(main, bg="#F6E71D")
@@ -37,11 +37,12 @@ def startmenu(main):  # login or register
           bg="#F6E71D").grid(row=1, column=0, sticky=E)
     Label(start_frm, text="Password", font="helvetica 23 bold", fg="black",
           bg="#F6E71D").grid(row=2, column=0, sticky=E)
+    
     # Entry
     mail_ent = Entry(start_frm, width=18, textvariable=mail_info)
     mail_ent.grid(row=1, column=1, ipady=5)
     mail_info.set("email")
-    pwd_ent = Entry(start_frm, width=18, textvariable=pwd_info)
+    pwd_ent = Entry(start_frm, width=18, textvariable=pwd_info, show='*')
     pwd_ent.grid(row=2, column=1, ipady=5)
 
     # Button
@@ -74,7 +75,7 @@ def loginclick():
                 print(result)
                 if result:
                     messagebox.showwarning("Admin", "Login Succesfully")
-                    mainMenu(mail_info.get())
+                    Profile_Menu(mail_info.get())
                     mail_gb = mail_info.get()
                 else:
                     messagebox.showwarning(
@@ -88,6 +89,7 @@ def regisframe():
     start_frm.destroy()
     main.title("VUS B : Registration")
     regis_frm = Frame(main, bg="#F6E71D")
+    
     regis_frm.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=1)
     regis_frm.columnconfigure((0, 1, 2), weight=1)
     # Header
@@ -178,50 +180,206 @@ def registration():  # Notification for registration
                 messagebox.showwarning(
                     "admin", "The confirm password not match")
 
+def Profile_Menu(user):
+    print("This profile menu")
+    global profile_menu, email
+    main.title("Vus Booking : Profile Menu")
+    profile_menu = Frame(main, bg="#F6E71D")
+    profile_menu.columnconfigure((0,1,2), weight=1)
+    profile_menu.rowconfigure((0,1,2,3,4,5,6), weight=1)
 
-def mainMenu(user):
-    print("This main menu")
-    main.title("Vus Booking : MainMenu")
-    main_menu = Frame(main, bg="#F6E71D")
-    main_menu.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), weight=1)
-    main_menu.columnconfigure((0, 1), weight=1)
+    # sql
+    sql = "SELECT fname,lname,phonenum,birthdate,province FROM customer WHERE email=?"
+    cursor.execute(sql,[mail_info.get()])
+    result = cursor.fetchone()
+
+    email = mail_info.get()
+    print(email)
+
+    #text
+    Label(profile_menu, image=logo_img, compound=LEFT, text="Vus Booking", font="helvetica 30 bold", fg="black",
+          bg="#F6E71D").grid(row=0, column=0, columnspan=3)
+    Label(profile_menu, text="Welcome : "+result[0]+" "+result[1], font="helvetica 16 bold",
+    bg="#F6E71D").grid(row=1, column=0, columnspan=2)
+
+    #set real time
+
+    #button
+    Button(profile_menu, text="Booking or But Tickets", width=20,
+    command=Booking_Menu).grid(row=2, column=0, columnspan=2, ipady=10)
+    Button(profile_menu, text="Edit Profile", width=20,
+    command=Edit_profile).grid(row=3, column=0, columnspan=2, ipady=10)
+    Button(profile_menu, text='Exit', width=20,
+    command=Exit_menu).grid(row=4, column=0, columnspan=2, ipady=10)
+
+    profile_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky=NSEW)
+
+def Edit_profile():
+    print("edit profile")
+    global edit_profile,profi_fname,profi_lname,profi_phonenum,profi_birthdate,profi_province,profi_gender
+    sql = "SELECT fname,lname,phonenum,birthdate,province,gender FROM customer WHERE email=?"
+    cursor.execute(sql,[mail_info.get()])
+    result_edt = cursor.fetchone()
+
+    main.title("Vus Booking : Edit Profile")
+    edit_profile = Frame(main, bg='#F6E71D')
+    edit_profile.columnconfigure((0,1), weight=1)
+    edit_profile.rowconfigure((0,1,2,3,4,5,6,7,8,9),weight=1)
+
+    # text & entry
+    Label(edit_profile, image=logo_img, compound=LEFT, text="Vus Booking", font="helvetica 30 bold", fg="black",
+          bg="#F6E71D").grid(row=0, column=0, columnspan=2)
+    Label(edit_profile, text='First Name', bg="#F6E71D", font="helvetica 16 bold").grid(row=1, column=0)
+    profi_fname = Entry(edit_profile, width=20, textvariable=profi_fnameINFO, state=DISABLED)
+    profi_fname.grid(row=1, column=1)
+
+    Label(edit_profile, text='Last Name', bg="#F6E71D", font="helvetica 16 bold").grid(row=2, column=0)
+    profi_lname = Entry(edit_profile, width=20, textvariable=profi_lnameINFO, state=DISABLED)
+    profi_lname.grid(row=2, column=1)
+
+    Label(edit_profile, text='Phone Number', bg="#F6E71D", font="helvetica 16 bold").grid(row=3, column=0)
+    profi_phonenum = Entry(edit_profile, width=20, textvariable=profi_phonenumINFO, state=DISABLED)
+    profi_phonenum.grid(row=3, column=1)
+
+    Label(edit_profile, text='Birthdate', bg="#F6E71D", font="helvetica 16 bold").grid(row=4, column=0)
+    profi_birthdate = Entry(edit_profile, width=20, textvariable=profi_birthdateINFO, state=DISABLED)
+    profi_birthdate.grid(row=4, column=1)
+
+    Label(edit_profile, text='Province', bg="#F6E71D", font="helvetica 16 bold").grid(row=5, column=0)
+    profi_province = Entry(edit_profile, width=20, textvariable=profi_provinceINFO, state=DISABLED)
+    profi_province.grid(row=5, column=1)
+
+    Label(edit_profile, text='Gender', bg="#F6E71D", font="helvetica 16 bold").grid(row=6, column=0)
+    profi_gender = Entry(edit_profile, width=20, textvariable=profi_genderINFO, state=DISABLED)
+    profi_gender.grid(row=6, column=1)
+
+    # button
+    Button(edit_profile, text='Edit', command=Editable).grid(row=7, column=0)
+    Button(edit_profile, text="Cancel", command=Cancel_edit).grid(row=7, column=1)
+
+    #set text from sql
+    profi_fnameINFO.set(result_edt[0])
+    profi_lnameINFO.set(result_edt[1])
+    profi_phonenumINFO.set(result_edt[2])
+    profi_birthdateINFO.set(result_edt[3])
+    profi_provinceINFO.set(result_edt[4])
+    profi_genderINFO.set(result_edt[5])
+
+    edit_profile.grid(row=1, column=1, rowspan=3, columnspan=3, sticky=NSEW)
+
+def Editable():
+    print("Editable")
+    profi_fname.config(state=NORMAL)
+    profi_lname.config(state=NORMAL)
+    profi_phonenum.config(state=NORMAL)
+    profi_birthdate.config(state=NORMAL)
+    profi_province.config(state=NORMAL)
+    profi_gender.config(state=NORMAL)
+    Button(edit_profile, text='Update', command=Update_data).grid(row=8, column=0, columnspan=2)
+
+def Update_data():
+    print("update data")
+    sql = """
+            UPDATE customer
+            SET fname=?, lname=?, phonenum=?, birthdate=?, province=?, gender=?
+            WHERE email=?
+    """
+    cursor.execute(sql,[profi_fname.get(), profi_lname.get(), profi_phonenum.get(), profi_birthdate.get(), profi_province.get(), profi_gender.get(), email])
+    conn.commit()
+    messagebox.showinfo("Admin","Update Data Successfully")
+    edit_profile.destroy()
+
+def Booking_Menu():
+    print("This booking menu")
+    global booking_menu
+    main.title("Vus Booking : Booking Menu")
+    booking_menu = Frame(main, bg="#F6E71D")
+    booking_menu.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), weight=1)
+    booking_menu.columnconfigure((0, 1), weight=1)
 
     # Text
-    Label(main_menu, image=logo_img, compound=LEFT, text="Vus Booking", font="helvetica 30 bold", fg="black",
+    Label(booking_menu, image=logo_img, compound=LEFT, text="Vus Booking", font="helvetica 30 bold", fg="black",
           bg="#F6E71D").grid(row=0, column=0, columnspan=2)
-    Label(main_menu, text='Select starting point', font="helvetica 16 bold", fg="black",
+    Label(booking_menu, text='Select starting point', font="helvetica 16 bold", fg="black",
           bg="#F6E71D").grid(row=1, column=0, columnspan=2)
-    Label(main_menu, text='Select destination point', font="helvetica 16 bold", fg="black",
+    Label(booking_menu, text='Select destination point', font="helvetica 16 bold", fg="black",
           bg="#F6E71D").grid(row=3, column=0, columnspan=2)
+    
     # Value Combobox
     province = ('Pathum Thani', 'Nakhon Nayok', 'Bangkok', 'Nakhon Pathom',
                 'Chon Buri', 'Rayong', 'Phetchaburi', 'Saraburi', 'Ayutthaya', 'Ratchaburi')
+    
     # use Combobox starting point
     province_select_sp = ttk.Combobox(
-        main_menu, textvariable=selected_province)
+        booking_menu, textvariable=selected_province)
     province_select_sp['values'] = province
     province_select_sp['state'] = 'readonly'
     province_select_sp.grid(row=2, column=0, columnspan=2,
                             sticky='n', ipady=5, ipadx=5)
 
     # use Combobox destination point
-    province_select_dp = ttk.Combobox(main_menu, textvariable=province)
+    province_select_dp = ttk.Combobox(booking_menu, textvariable=province)
     province_select_dp['values'] = province
     province_select_dp['state'] = 'readonly'
     province_select_dp.grid(row=4, column=0, columnspan=2,
                             sticky='n', ipady=5, ipadx=5)
+    
+    # check buy or booking tickets
+    bt_button = Radiobutton(booking_menu, text=tickets_list[0], variable=tickets,
+    value=0, bg="#F6E71D", font="helvetica 16 bold", fg="black")
+    bt_button.grid(row=5, column=0)
 
-    main_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
+    bkt_button = Radiobutton(booking_menu, text=tickets_list[1], variable=tickets,
+    value=1, bg="#F6E71D", font="helvetica 16 bold", fg="black")
+    bkt_button.grid(row=5, column=1)
+    
+    # select how many do you want to buy or booking tickets
+    Label(booking_menu, text='Tickets : ', bg="#F6E71D", font="helvetica 16 bold",
+    fg="black").grid(row=6, column=0, sticky='e')
+    tk_spin = Spinbox(booking_menu, from_= 0, to = 100, width=8)
+    tk_spin.grid(row=6, column=1, sticky='w')
 
+    # Button
+    Button(booking_menu, text='Cancel', width=10, command=cancelbooking).grid(row=7, column=0)
+    Button(booking_menu, text='OK', width=10, command=checkradiobutton).grid(row=7, column=1)
+
+    booking_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
+
+def checkradiobutton():
+    if tickets.get() == 0:
+        messagebox.showinfo("system",'you selected buy tickets')
+        return 0
+    else:
+        messagebox.showinfo('system','you selected booking ticket')
+        return 1
+
+def cancelbooking():
+    booking_menu.destroy()
+
+def Cancel_edit():
+    print("cancel edit")
+    main.title("Vus Booking : Profile Menu")
+    edit_profile.destroy()
+
+def Exit_menu():
+    print("Exit menu")
+    main.title("Vus Booking")
+    profile_menu.destroy()
+    pwd_ent.delete(0,END)
+    pwd_ent.focus_force()
 
 w = 600
 h = 750
 createconnection()
 main = mainwindow()
+
 # all variables
 regis_list = ["Name", "Lastname", "Gender", "Phone num",
               "Email", "Password", "Confirm Password"]
 gender_list = ["-", "Male", "Female", "Other"]
+tickets_list = {0: 'Buy Ticket', 1: 'Booking Ticket'}
+tickets = IntVar()
+tickets.set(0)
 mail_info = StringVar()
 pwd_info = StringVar()
 fname_info = StringVar()
@@ -235,6 +393,13 @@ selected_province = StringVar()
 logo_img = PhotoImage(
     file="image/logo.png").subsample(3, 3)
 regis_img = PhotoImage(file="image/register.png").subsample(3, 3)
+
+profi_fnameINFO = StringVar()
+profi_lnameINFO = StringVar()
+profi_phonenumINFO = StringVar()
+profi_birthdateINFO = StringVar()
+profi_provinceINFO = StringVar()
+profi_genderINFO = StringVar()
 
 startmenu(main)
 main.mainloop()
