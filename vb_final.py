@@ -1,3 +1,5 @@
+import collections
+from datetime import time
 from os import stat_result
 import sqlite3
 from tkinter import *
@@ -85,7 +87,6 @@ def loginclick():
 
 def regisframe():
     global fname_ent, lname_ent, gender_spin, phone_ent, newmail_ent, newpwd_ent, cfpwd_ent, regis_frm
-    start_frm.destroy()
     main.title("VUS B : Registration")
     regis_frm = Frame(main, bg="#F6E71D")
     
@@ -121,7 +122,7 @@ def regisframe():
     cfpwd_ent = Entry(regis_frm, width=20, textvariable=newcfpwd_info)
     cfpwd_ent.grid(row=7, column=1, columnspan=2, sticky=W, padx=(5, 0))
 
-    Button(regis_frm, width=10, text="Cancel").grid(row=8, column=0)
+    Button(regis_frm, width=10, text="Cancel",command=cancel_regis).grid(row=8, column=0)
     Button(regis_frm, width=10, text="Register",
            command=registration).grid(row=8, column=2)
 
@@ -323,19 +324,15 @@ def Booking_Menu():
     province_select_dp.grid(row=4, column=0, columnspan=2,
                             sticky='n', ipady=5, ipadx=5)
     
-    # check buy or booking tickets
-    bt_button = Radiobutton(booking_menu, text=tickets_list[0], variable=tickets,
-    value=1, bg="#F6E71D", font="helvetica 16 bold", fg="black")
-    bt_button.grid(row=5, column=0)
 
     bkt_button = Radiobutton(booking_menu, text=tickets_list[1], variable=tickets,
-    value=2, bg="#F6E71D", font="helvetica 16 bold", fg="black")
-    bkt_button.grid(row=5, column=1)
+    value=1, bg="#F6E71D", font="helvetica 16 bold", fg="black")
+    bkt_button.grid(row=5, column=0,columnspan=2)
     
     # select how many do you want to buy or booking tickets
     Label(booking_menu, text='Tickets : ', bg="#F6E71D", font="helvetica 16 bold",
     fg="black").grid(row=6, column=0, sticky='e')
-    tk_spin = Spinbox(booking_menu, from_= 0, to = 100, width=8,textvariable=spin_value)
+    tk_spin = Spinbox(booking_menu, from_= 0, to = 20, width=8,textvariable=spin_value)
     tk_spin.grid(row=6, column=1, sticky='w')
 
     #calendar
@@ -349,8 +346,31 @@ def Booking_Menu():
 
     booking_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
 
+def Booking_car():
+    global booking_car
+    print("Booking Car")
+    main.title("Vus Booking : Choose a trip")
+    booking_car = Frame(main, bg="#F6E71D")
+    booking_car.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), weight=1)
+    booking_car.columnconfigure((0, 1), weight=1)
+    Label(booking_car,text="Choose a trip", bg="#F6E71D").grid(row=0,column=0,columnspan=2)
+
+    show_info_frame = Frame(booking_car,bg="lightyellow")
+    show_info_frame.rowconfigure((0, 1, 2), weight=1)
+    show_info_frame.columnconfigure((0, 1), weight=1)    
+
+    Label(show_info_frame,image=home_img,text=province_select_sp.get(),bg="lightyellow",compound=LEFT).grid(row=0, column=0, sticky='w')
+    Label(show_info_frame,image=calendar_img,text=province_select_dp.get(),bg="lightyellow",compound=LEFT).grid(row=1, column=0, sticky='w')
+    Label(show_info_frame,image=location_img,text=cal.get_date(),bg="lightyellow",compound=LEFT).grid(row=2, column=0, sticky='w') 
+    show_info_frame.grid(row=1,column=0,columnspan=2,sticky="NEWS",padx=15,pady=15)
+    space = " " * 125
+    space_2 = " " * 50
+    for i in range(number):
+        Button(booking_car,text=time_list[i]+" PM" + space + "Price   "+str(price_list[i]) + "   Bath" + "\nStart :"+province_select_sp.get() + "\nDestination : "+province_select_dp.get() + space_2 + "Seat",anchor=W,relief=GROOVE,bg="lightyellow").grid(row=i+2,column=0,columnspan=2,sticky="NEWS",pady=15,padx=15)
+    booking_car.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
+
+    Button(booking_car,text="Cancel",command=cancel_trip).grid(row=6,columnspan=2,column=0)
 def checkradiobutton():
-    print(test_date)
     if province_select_sp.get() == "":
         messagebox.showinfo("system",'Please Select starting point.')
     elif province_select_dp.get() == "":
@@ -361,16 +381,14 @@ def checkradiobutton():
         messagebox.showinfo("system",'Please Select type tickets.')
     elif spin_value.get() == "0":
         messagebox.showinfo("system",'Please Enter the number of your tickets.')
-    elif tickets.get() == 1:
-        messagebox.showinfo("system",'you selected buy tickets.')
-        return 1
-    elif tickets.get() == 2:
-        messagebox.showinfo('system','you selected booking ticket.')
-        return 2
+
     elif check_date.get() == "":
         messagebox.showinfo("system",'Please Enter your date.')
-    else :
-        print("I")
+    elif check_date.get() != "":
+        fake_rng()
+        Booking_car()
+        
+        
     
 def calendar():
     global calendar_frame,date,cal
@@ -388,6 +406,19 @@ def calendar():
 
     
     calendar_frame.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
+
+def fake_rng():
+    global number
+    check_date_list = cal.get_date()
+    x = check_date_list.split("/")
+    if int(x[1]) % 2 == 0:
+        print("even")
+        number = 2
+    else :
+        print("odd")
+        number = 4
+    
+
 
 def grad_date():
     global test_date
@@ -407,11 +438,15 @@ def cancelbooking():
     spin_value.set(0)
     check_date.set("")
 
+def cancel_trip():
+    booking_car.destroy()
+
 def Cancel_edit():
     print("cancel edit")
     main.title("Vus Booking : Profile Menu")
     edit_profile.destroy()
-
+def cancel_regis():
+    regis_frm.destroy()
 def Exit_menu():
     print("Exit menu")
     main.title("Vus Booking")
@@ -425,11 +460,15 @@ createconnection()
 main = mainwindow()
 
 # all variables
+
+
 test_date = ""
 regis_list = ["Name", "Lastname", "Gender", "Phone num",
               "Email", "Password", "Confirm Password"]
 gender_list = ["-", "Male", "Female", "Other"]
 tickets_list = {0: 'Buy Ticket', 1: 'Booking Ticket'}
+time_list = ["9.00","12.30","14.30","18.30"]
+price_list = [470,530,570,600]
 tickets = IntVar()
 tickets.set(0)
 tk_spin = IntVar()
@@ -451,14 +490,16 @@ selected_province_dp = StringVar()
 logo_img = PhotoImage(
     file="image/logo.png").subsample(3, 3)
 regis_img = PhotoImage(file="image/register.png").subsample(3, 3)
-
+home_img = PhotoImage(file="image/home.png").subsample(6,6)
+location_img = PhotoImage(file="image/location.png").subsample(9,9)
+calendar_img = PhotoImage(file="image/calendar.png").subsample(9,9)
 profi_fnameINFO = StringVar()
 profi_lnameINFO = StringVar()
 profi_phonenumINFO = StringVar()
 profi_birthdateINFO = StringVar()
 profi_provinceINFO = StringVar()
 profi_genderINFO = StringVar()
-
+number = 0
 startmenu(main)
 main.mainloop()
 cursor.close()  # close cursor
