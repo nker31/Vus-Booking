@@ -1,3 +1,6 @@
+import collections
+from datetime import time
+from os import stat_result
 import sqlite3
 from tkinter import *
 from tkinter import messagebox
@@ -72,8 +75,7 @@ def loginclick():
                 result = cursor.fetchone()
                 print(result)
                 if result:
-                    messagebox.showinfo("Admin", "Login Succesfully")
-                    #Booking_seat()
+                    messagebox.showwarning("Admin", "Login Succesfully")
                     Profile_Menu(mail_info.get())
                     mail_gb = mail_info.get()
                 else:
@@ -81,6 +83,7 @@ def loginclick():
                         "Admin", "Username or Password\nInvalid")
                     pwd_ent.delete(0, END)
                     pwd_ent.focus_force()
+
 
 def regisframe():
     global fname_ent, lname_ent, gender_spin, phone_ent, newmail_ent, newpwd_ent, cfpwd_ent, regis_frm
@@ -161,8 +164,6 @@ def registration():  # Notification for registration
                 sql_insert = "insert into customer (email,pwd,fname,lname,phonenum,gender)values(?,?,?,?,?,?)"
                 cursor.execute(sql_insert, [newmail_info.get(), newpwd_info.get(), fname_info.get(
                 ), lname_info.get(), phone_info.get(), gender_spin.get()])
-                sql_insert = "insert into my_ticket (email) values (?)"
-                cursor.execute(sql_insert, [newmail_info.get()])
                 conn.commit()
                 # retrivedata()
                 messagebox.showinfo("Admin", "Registration Successfully")
@@ -204,14 +205,12 @@ def Profile_Menu(user):
     #set real time
 
     #button
-    Button(profile_menu, text="Booking Tickets", width=20,
+    Button(profile_menu, text="Booking or Buy Tickets", width=20,
     command=Booking_Menu).grid(row=2, column=0, columnspan=2, ipady=10)
-    Button(profile_menu, text="Your Ticket", width=20,
-    command=history).grid(row=3, column=0, columnspan=2, ipady=10)
     Button(profile_menu, text="Edit Profile", width=20,
-    command=Edit_profile).grid(row=4, column=0, columnspan=2, ipady=10)
+    command=Edit_profile).grid(row=3, column=0, columnspan=2, ipady=10)
     Button(profile_menu, text='Exit', width=20,
-    command=Exit_menu).grid(row=5, column=0, columnspan=2, ipady=10)
+    command=Exit_menu).grid(row=4, column=0, columnspan=2, ipady=10)
 
     profile_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky=NSEW)
 
@@ -326,14 +325,14 @@ def Booking_Menu():
                             sticky='n', ipady=5, ipadx=5)
     
 
-    bkt_button = Radiobutton(booking_menu, text=tickets_list[1],
+    bkt_button = Radiobutton(booking_menu, text=tickets_list[1], variable=tickets,
     value=1, bg="#F6E71D", font="helvetica 16 bold", fg="black")
     bkt_button.grid(row=5, column=0,columnspan=2)
     
     # select how many do you want to buy or booking tickets
     Label(booking_menu, text='Tickets : ', bg="#F6E71D", font="helvetica 16 bold",
     fg="black").grid(row=6, column=0, sticky='e')
-    tk_spin = Spinbox(booking_menu, from_= 0, to = 20, width=8,textvariable=tickets)
+    tk_spin = Spinbox(booking_menu, from_= 0, to = 20, width=8,textvariable=spin_value)
     tk_spin.grid(row=6, column=1, sticky='w')
 
     #calendar
@@ -342,7 +341,7 @@ def Booking_Menu():
     date_show = Label(booking_menu,text="",textvariable=check_date,bg="#F6E71D")
     date_show.grid(row=7,column=1,sticky=W,padx=20)
     # Button
-    Button(booking_menu, width=10,text="Cancel", command=cancelbooking).grid(row=8, column=0)
+    Button(booking_menu, text='Cancel', width=10, command=cancelbooking).grid(row=8, column=0)
     Button(booking_menu, text='OK', width=10, command=checkradiobutton).grid(row=8, column=1)
 
     booking_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
@@ -361,87 +360,16 @@ def Booking_car():
     show_info_frame.columnconfigure((0, 1), weight=1)    
 
     Label(show_info_frame,image=home_img,text=province_select_sp.get(),bg="lightyellow",compound=LEFT).grid(row=0, column=0, sticky='w')
-    Label(show_info_frame,image=calendar_img,text=province_select_dp.get(),bg="lightyellow",compound=LEFT).grid(row=1, column=0, sticky='w',padx=10)
-    Label(show_info_frame,image=location_img,text=cal.get_date(),bg="lightyellow",compound=LEFT).grid(row=2, column=0, sticky='w',padx=8) 
+    Label(show_info_frame,image=calendar_img,text=province_select_dp.get(),bg="lightyellow",compound=LEFT).grid(row=1, column=0, sticky='w')
+    Label(show_info_frame,image=location_img,text=cal.get_date(),bg="lightyellow",compound=LEFT).grid(row=2, column=0, sticky='w') 
     show_info_frame.grid(row=1,column=0,columnspan=2,sticky="NEWS",padx=15,pady=15)
     space = " " * 125
-    space_2 = " " * 70
-
-    button_car_1 = Button(booking_car,text=time_list[0]+" PM" + space + "Price   "+str(price_list[0]) + "   Bath" + "\n      Start :"+province_select_sp.get() +space_2+ "\nDestination : "+province_select_dp.get() + space_2 + "Seat : 10",anchor=W,relief=GROOVE,bg="lightyellow",command=lambda :trip_select(0))
-
-    button_car_2 = Button(booking_car,text=time_list[1]+" PM" + space + "Price   "+str(price_list[1]) + "   Bath" + "\n      Start :"+province_select_sp.get() +space_2+ "\nDestination : "+province_select_dp.get() + space_2 + "Seat : 10",anchor=W,relief=GROOVE,bg="lightyellow",command=lambda :trip_select(1))
-
-    button_car_3 = Button(booking_car,text=time_list[2]+" PM" + space + "Price   "+str(price_list[2]) + "   Bath" + "\n      Start :"+province_select_sp.get() +space_2+ "\nDestination : "+province_select_dp.get() + space_2 + "Seat : 10",anchor=W,relief=GROOVE,bg="lightyellow",command=lambda :trip_select(2))
-
-    button_car_4 = Button(booking_car,text=time_list[3]+" PM" + space + "Price   "+str(price_list[3]) + "   Bath" + "\n      Start :"+province_select_sp.get() +space_2+ "\nDestination : "+province_select_dp.get() + space_2 + "Seat : 10",anchor=W,relief=GROOVE,bg="lightyellow",command=lambda :trip_select(3))
-
-    button_list = [button_car_1,button_car_2,button_car_3,button_car_4]
+    space_2 = " " * 50
     for i in range(number):
-        button_list[i]
-        button_list[i].grid(row=2+i,column=0,columnspan=2,sticky="NEWS",pady=15,padx=15)
-
+        Button(booking_car,text=time_list[i]+" PM" + space + "Price   "+str(price_list[i]) + "   Bath" + "\nStart :"+province_select_sp.get() + "\nDestination : "+province_select_dp.get() + space_2 + "Seat",anchor=W,relief=GROOVE,bg="lightyellow").grid(row=i+2,column=0,columnspan=2,sticky="NEWS",pady=15,padx=15)
     booking_car.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
 
     Button(booking_car,text="Cancel",command=cancel_trip).grid(row=6,columnspan=2,column=0)
-
-def Booking_seat():
-    global booking_seat
-
-    main.title("Vus Booking : Choose a seat")
-    booking_seat = Frame(main,bg="#F6E71D")
-    booking_seat.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), weight=1)
-    booking_seat.columnconfigure((0,1,2,3,4), weight=1)
-
-    Label(booking_seat,text="Choose a seat",bg="#F6E71D", font="helvetica 24 bold").grid(row=0,column=0,columnspan=5)
-    Label(booking_seat,text="Left",bg="#F6E71D", font="helvetica 10").grid(row=1,column=0,columnspan=2)
-    Label(booking_seat,text="Right",bg="#F6E71D", font="helvetica 10").grid(row=1,column=3,columnspan=2)
-    for i,des in enumerate(seat_list_left):
-        Checkbutton(booking_seat,text=des,compound=LEFT,variable=check_seat[i],command=Check_seat,image=man_seat,bg="#F6E71D").grid(row=i+2,column=0)
-    for i,des in enumerate(seat_list_right):
-        Checkbutton(booking_seat,text=des,compound=LEFT,variable=check_seat[i+5],command=Check_seat,image=man_seat,bg="#F6E71D").grid(row=i+2,column=4)
-    #distance covid-19
-    for i,des in enumerate(seat_list_left_dis):
-        Button(booking_seat,text=des,compound=LEFT,image=man_seat,bg="#F6E71D",command=distance,relief=RIDGE).grid(row=i+2,column=1)
-    for i,des in enumerate(seat_list_right_dis):
-        Button(booking_seat,text=des,compound=LEFT,image=man_seat,bg="#F6E71D",command=distance,relief=RIDGE).grid(row=i+2,column=3)
-    
-    Label(booking_seat,text="Total seat :", textvariable=txt_total,bg="#F6E71D").grid(row=7,columnspan=5,column=0)
-    Button(booking_seat,text="Cancel",command=cancel_seat,width=8).grid(row=9,column=0,columnspan=5)
-    Button(booking_seat,text="Ok",width=8,command=check_total).grid(row=8,column=0,columnspan=5)
-    booking_seat.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
-
-def Payment():
-    global pay_ment,total_price
-    main.title("Vus Booking : Payment")
-    pay_ment = Frame(main,bg="#F6E71D")
-    pay_ment.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), weight=1)
-    pay_ment.columnconfigure((0,1), weight=1)
-    Label(pay_ment,text="Vus Booking Ticket",bg="#F6E71D",font="helvetica 20",image=img_bus,compound=LEFT).grid(row=0,column=0,columnspan=2,sticky=W,padx=15)
-    Label(pay_ment,text= province_select_sp.get() +" - " + province_select_dp.get() + "  "+time_select,bg="#F6E71D",font="helvetica 20").grid(row=1,column=0,columnspan=2,sticky=W,padx=15)
-    Label(pay_ment,text="Date : "+cal.get_date(),bg="#F6E71D",font="helvetica 20").grid(row=2,column=0,columnspan=2,sticky=W,padx=15)
-    Label(pay_ment,text="   "+province_select_sp.get() + " Station",bg="#F6E71D",font="helvetica 20").grid(row=3,column=0,columnspan=2,sticky=W,padx=15)
-    Label(pay_ment,text="   "+province_select_dp.get() + " Station",bg="#F6E71D",font="helvetica 20").grid(row=4,column=0,columnspan=2,sticky=W,padx=15)
-    Label(pay_ment,text="Normal economy class",bg="#F6E71D",font="helvetica 20").grid(row=5,column=0,sticky=W,padx=15)
-    Label(pay_ment,text="Price",bg="#F6E71D",font="helvetica 20").grid(row=6,column=0,sticky=W,padx=15)
-    Label(pay_ment,text=str(price_select) +"x"+ str(tickets.get()),bg="#F6E71D",font="helvetica 20").grid(row=6,column=1,sticky=E,padx=15)
-    Label(pay_ment,text="Total ",bg="#F6E71D",font="helvetica 20").grid(row=7,column=0,sticky=W,padx=15)
-    total_price = tickets.get() * price_select
-    Label(pay_ment,text=str(total_price),bg="#F6E71D",font="helvetica 20").grid(row=7,column=1,sticky=E,padx=15)
-    Label(pay_ment,image=img_qr,text="(Please scan QRcode with LINE)",bg="#F6E71D",compound=TOP,font="helvetica 20").grid(row=8,column=0,columnspan=2)
-
-    Button(pay_ment,text="Ok",command=payment_success).grid(row=9,column=0,columnspan=2)
-    pay_ment.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
-
-def My_ticket():
-    global my_ticket
-    my_ticket = Frame(main,bg="#F6E71D") 
-    my_ticket.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), weight=1)
-    my_ticket.columnconfigure((0,1), weight=1)
-
-    Button(my_ticket,text="Cancel").grid(row=7,column=0,columnspan=2)
-    my_ticket.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
-
-
 def checkradiobutton():
     if province_select_sp.get() == "":
         messagebox.showinfo("system",'Please Select starting point.')
@@ -450,31 +378,18 @@ def checkradiobutton():
     elif province_select_sp.get() == province_select_dp.get():
         messagebox.showinfo("system",'Please Select Different place.')
     elif tickets.get() == 0:
+        messagebox.showinfo("system",'Please Select type tickets.')
+    elif spin_value.get() == "0":
         messagebox.showinfo("system",'Please Enter the number of your tickets.')
+
     elif check_date.get() == "":
         messagebox.showinfo("system",'Please Enter your date.')
     elif check_date.get() != "":
         fake_rng()
         Booking_car()
-
-def Check_seat():
-    global total
-    total = 0
-    for i ,des in enumerate(seat_list):
-        if check_seat[i].get():
-            total = total + 1
-    print(total)
-    txt_total.set("Total seat :"+str(total))
-
-def check_total():
-    print("FUCK")
-    print(tickets.get())
-    print(total)
-    print("YOU")
-    if tickets.get() == total :
-        Payment()
-    else :
-        messagebox.showwarning("Peam","Please choose your seat equal your tickets")
+        
+        
+    
 def calendar():
     global calendar_frame,date,cal
     print("calendar")
@@ -492,20 +407,6 @@ def calendar():
     
     calendar_frame.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
 
-def payment_success():
-    print("i")
-    sql = """UPDATE my_ticket 
-            SET start =?,destination=?,time=?,total_price=?
-            WHERE email=?
-        """
-    cursor.execute(sql, [province_select_sp.get(), province_select_dp.get(),time_select, total_price,mail_gb])
-    conn.commit()
-
-
-
-    Profile_Menu(mail_gb)
-
-
 def fake_rng():
     global number
     check_date_list = cal.get_date()
@@ -517,21 +418,7 @@ def fake_rng():
         print("odd")
         number = 4
     
-def trip_select(num):
-    global time_select,price_select
-    print(num)
-    time_select = time_list[num]
-    price_select = price_list[num]
-    print(time_select)
-    print(price_select)
-    Booking_seat()
 
-def distance():
-    messagebox.showinfo("Covid-19","ห่างกันสักพัก")
-
-def history():
-    print("i")
-    My_ticket()
 
 def grad_date():
     global test_date
@@ -558,13 +445,8 @@ def Cancel_edit():
     print("cancel edit")
     main.title("Vus Booking : Profile Menu")
     edit_profile.destroy()
-
 def cancel_regis():
     regis_frm.destroy()
-
-def cancel_seat():
-    booking_seat.destroy()
-    check_seat
 def Exit_menu():
     print("Exit menu")
     main.title("Vus Booking")
@@ -578,26 +460,15 @@ createconnection()
 main = mainwindow()
 
 # all variables
-txt_total = StringVar()
-txt_total.set("Total Seat : 0")
-total = 0
+
+
 test_date = ""
 regis_list = ["Name", "Lastname", "Gender", "Phone num",
               "Email", "Password", "Confirm Password"]
 gender_list = ["-", "Male", "Female", "Other"]
 tickets_list = {0: 'Buy Ticket', 1: 'Booking Ticket'}
-
 time_list = ["9.00","12.30","14.30","18.30"]
 price_list = [470,530,570,600]
-
-seat_list = ["A1","A2","A3","A4","A5","C1","C2","C3","C4","C5"]
-seat_list_left = ["A1","A2","A3","A4","A5"]
-seat_list_right = ["C1","C2","C3","C4","C5"]
-seat_list_left_dis = ["B1","B2","B3","B4","B5"]
-seat_list_right_dis = ["D1","D2","D3","D4","D5"]
-check_seat = [BooleanVar() for i in seat_list]
-
-
 tickets = IntVar()
 tickets.set(0)
 tk_spin = IntVar()
@@ -616,14 +487,12 @@ newpwd_info = StringVar()
 newcfpwd_info = StringVar()
 selected_province_sp = StringVar()
 selected_province_dp = StringVar()
-logo_img = PhotoImage(file="image/logo.png").subsample(3, 3)
+logo_img = PhotoImage(
+    file="image/logo.png").subsample(3, 3)
 regis_img = PhotoImage(file="image/register.png").subsample(3, 3)
 home_img = PhotoImage(file="image/home.png").subsample(6,6)
 location_img = PhotoImage(file="image/location.png").subsample(9,9)
 calendar_img = PhotoImage(file="image/calendar.png").subsample(9,9)
-man_seat = PhotoImage(file="image/man_seat.png").subsample(9,9)
-img_qr = PhotoImage(file="image/qr_code.png")
-img_bus = PhotoImage(file="image/bus.png").subsample(6,6)
 profi_fnameINFO = StringVar()
 profi_lnameINFO = StringVar()
 profi_phonenumINFO = StringVar()
