@@ -1,8 +1,9 @@
-import sqlite3
-from tkinter import *
-from tkinter import messagebox
-from tkinter import ttk
 from tkcalendar import *
+from tkinter import ttk
+from tkinter import messagebox
+from tkinter import *
+import sqlite3
+mytoken = "TfYNnVsjLI0SMOLvFzSP3n0EnYo9OvjAMlsiIdFDcKs"
 
 
 def createconnection():  # connect to database
@@ -21,7 +22,7 @@ def mainwindow():
     main.config(bg="#98ddca")
     main.rowconfigure((0, 1, 2, 3, 5), weight=1)
     main.columnconfigure((0, 1, 2, 3, 4), weight=1)
-    img_icon = PhotoImage(file="image/bus.png").subsample(6, 6)
+    img_icon = PhotoImage(file="image/logo.png").subsample(6, 6)
     main.iconphoto(False, img_icon)
     return main
 
@@ -48,10 +49,10 @@ def startmenu(main):  # login or register
     pwd_ent.grid(row=2, column=1, ipady=5)
 
     # Button
-    Button(start_frm, text="Register", width=12, command=regisframe).grid(
-        row=3, column=0, ipady=13, sticky=E)
-    Button(start_frm, text="Login", width=12, command=loginclick).grid(
-        row=3, column=1, ipady=13, sticky=W, padx=30)
+    Button(start_frm, image=regisBt_img, command=regisframe).grid(
+        row=3, column=0, sticky=E)
+    Button(start_frm, image=loginBt_img, command=loginclick).grid(
+        row=3, column=1, sticky=W, padx=30)
     start_frm.grid(row=1, column=1, rowspan=3, columnspan=3, sticky=NSEW)
 
 
@@ -124,9 +125,9 @@ def regisframe():
     cfpwd_ent = Entry(regis_frm, width=20, textvariable=newcfpwd_info)
     cfpwd_ent.grid(row=7, column=1, columnspan=2, sticky=W, padx=(5, 0))
 
-    Button(regis_frm, width=10, text="Cancel",
+    Button(regis_frm, image=cancelBT_img,
            command=cancel_regis).grid(row=8, column=0)
-    Button(regis_frm, width=10, text="Register",
+    Button(regis_frm, image=regisBt_img,
            command=registration).grid(row=8, column=2)
 
     regis_frm.grid(row=1, column=1, rowspan=3, columnspan=3, sticky=NSEW)
@@ -211,14 +212,14 @@ def Profile_Menu(user):
     # set real time
 
     # button
-    Button(profile_menu, text="Booking Tickets", width=20,
-           command=Booking_Menu).grid(row=2, column=0, columnspan=2, ipady=10)
-    Button(profile_menu, text="Your Ticket", width=20,
-           command=history).grid(row=3, column=0, columnspan=2, ipady=10)
-    Button(profile_menu, text="Edit Profile", width=20,
-           command=Edit_profile).grid(row=4, column=0, columnspan=2, ipady=10)
-    Button(profile_menu, text='Exit', width=20,
-           command=Exit_menu).grid(row=5, column=0, columnspan=2, ipady=10)
+    Button(profile_menu, image=bookMenu_img,
+           command=Booking_Menu).grid(row=2, column=0, columnspan=2)
+    Button(profile_menu, image=ticketMenu_img,
+           command=history).grid(row=3, column=0, columnspan=2)
+    Button(profile_menu, image=editproMenu_img,
+           command=Edit_profile).grid(row=4, column=0, columnspan=2)
+    Button(profile_menu, image=exitMenu_img,
+           command=Exit_menu).grid(row=5, column=0, columnspan=2)
 
     profile_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky=NSEW)
 
@@ -275,8 +276,9 @@ def Edit_profile():
     profi_gender.grid(row=6, column=1)
 
     # button
-    Button(edit_profile, text='Edit', command=Editable).grid(row=7, column=0)
-    Button(edit_profile, text="Cancel",
+    Button(edit_profile, image=editBt_img,
+           command=Editable).grid(row=7, column=0)
+    Button(edit_profile, image=cancelBT_img,
            command=Cancel_edit).grid(row=7, column=1)
 
     # set text from sql
@@ -298,7 +300,7 @@ def Editable():
     profi_birthdate.config(state=NORMAL)
     profi_province.config(state=NORMAL)
     profi_gender.config(state=NORMAL)
-    Button(edit_profile, text='Update', command=Update_data).grid(
+    Button(edit_profile, image=updateBt_img, command=Update_data).grid(
         row=8, column=0, columnspan=2)
 
 
@@ -371,9 +373,9 @@ def Booking_Menu():
     check_date.set("DD/MM/YY")
     date_show.grid(row=7, column=1, sticky=W, padx=20)
     # Button
-    Button(booking_menu, width=10, text="Cancel",
+    Button(booking_menu, image=exitMenu_img,
            command=cancelbooking).grid(row=8, column=0)
-    Button(booking_menu, text='OK', width=10,
+    Button(booking_menu, image=okBT_img,
            command=checkradiobutton).grid(row=8, column=1)
 
     booking_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
@@ -424,7 +426,7 @@ def Booking_car():
 
     booking_car.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
 
-    Button(booking_car, text="Cancel", command=cancel_trip).grid(
+    Button(booking_car, image=cancelBT_img, command=cancel_trip).grid(
         row=6, columnspan=2, column=0)
 
 
@@ -495,7 +497,7 @@ def Payment():
     Label(pay_ment, image=img_qr, text="(Please scan QRcode with LINE)", bg="#ffd3b4",
           compound=TOP, font="helvetica 20").grid(row=8, column=0, columnspan=2, pady=3)
 
-    Button(pay_ment, text="Ok", command=payment_success).grid(
+    Button(pay_ment, image=okBT_img, command=payment_success).grid(
         row=9, column=0, columnspan=2)
     pay_ment.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
 
@@ -538,7 +540,7 @@ def Check_seat():
 
 
 def check_total():
-    print("FUCK")
+    booking_seat.destroy()
     print(tickets.get())
     print(total)
     print("YOU")
@@ -581,6 +583,7 @@ def payment_success():
     conn.commit()
     messagebox.showinfo(
         "Vus Booking", "Payment Successful✅\nPlease check your ticket in Ticket History")
+    pay_ment.destroy()
     Profile_Menu(mail_gb)
 
 
@@ -716,7 +719,17 @@ location_img = PhotoImage(file="image/location.png").subsample(9, 9)
 calendar_img = PhotoImage(file="image/calendar.png").subsample(9, 9)
 man_seat = PhotoImage(file="image/man_seat.png").subsample(9, 9)
 img_qr = PhotoImage(file="image/qr_code.png")
-img_bus = PhotoImage(file="image/bus.png").subsample(6, 6)
+img_bus = PhotoImage(file="image/logo.png").subsample(6, 6)
+bookMenu_img = PhotoImage(file="image/booking_bt.png").subsample(3, 3)
+ticketMenu_img = PhotoImage(file="image/ticket_bt.png").subsample(3, 3)
+editproMenu_img = PhotoImage(file="image/editpro_bt.png").subsample(3, 3)
+exitMenu_img = PhotoImage(file="image/exit_bt.png").subsample(3, 3)
+loginBt_img = PhotoImage(file="image/login_bt.png").subsample(3, 3)
+regisBt_img = PhotoImage(file="image/register_bt.png").subsample(3, 3)
+updateBt_img = PhotoImage(file="image/update_bt.png").subsample(3, 3)
+editBt_img = PhotoImage(file="image/edit_bt.png").subsample(3, 3)
+cancelBT_img = PhotoImage(file="image/cancel_bt.png").subsample(3, 3)
+okBT_img = PhotoImage(file="image/ok_bt.png").subsample(3, 3)
 profi_fnameINFO = StringVar()
 profi_lnameINFO = StringVar()
 profi_phonenumINFO = StringVar()
