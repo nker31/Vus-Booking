@@ -3,11 +3,6 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter import *
 import sqlite3
-mytoken = "TfYNnVsjLI0SMOLvFzSP3n0EnYo9OvjAMlsiIdFDcKs"
-<<<<<<< HEAD
-=======
-
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
 
 def createconnection():  # connect to database
     global conn, cursor
@@ -51,15 +46,10 @@ def startmenu(main):  # login or register
     pwd_ent.grid(row=2, column=1, ipady=5)
 
     # Button
-<<<<<<< HEAD
     Button(start_frm, image=regisBt_img, command=regisframe,bd=0).grid(
         row=3, column=0, sticky=E)
     Button(start_frm, image=loginBt_img, command=loginclick,bd=0).grid(
-=======
-    Button(start_frm, image=regisBt_img, command=regisframe).grid(
-        row=3, column=0, sticky=E)
-    Button(start_frm, image=loginBt_img, command=loginclick).grid(
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
         row=3, column=1, sticky=W, padx=30)
     start_frm.grid(row=1, column=1, rowspan=3, columnspan=3, sticky=NSEW)
 
@@ -85,23 +75,16 @@ def loginclick():
                 result = cursor.fetchone()
                 if result:
                     messagebox.showinfo("Admin", "Login Succesfully")
-<<<<<<< HEAD
-=======
-                    # Booking_seat()
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
                     Profile_Menu(mail_info.get())
                     mail_gb = mail_info.get()
                 else:
                     messagebox.showwarning("Admin", "Username or Password\nInvalid")
                     pwd_ent.delete(0, END)
                     pwd_ent.focus_force()
-<<<<<<< HEAD
         else:
             messagebox.showwarning("Admin", "Username Invalid")
-=======
 
-
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
 def regisframe():
     global fname_ent, lname_ent, gender_spin, phone_ent, newmail_ent, newpwd_ent, cfpwd_ent, regis_frm
     main.title("VUS B : Registration")
@@ -140,15 +123,10 @@ def regisframe():
     cfpwd_ent.grid(row=7, column=1, columnspan=2, sticky=W, padx=(5, 0))
 
     Button(regis_frm, image=cancelBT_img,
-<<<<<<< HEAD
            command=cancel_regis,bd=0).grid(row=8, column=0)
     Button(regis_frm, image=regisBt_img,
            command=registration,bd=0).grid(row=8, column=2)
-=======
-           command=cancel_regis).grid(row=8, column=0)
-    Button(regis_frm, image=regisBt_img,
-           command=registration).grid(row=8, column=2)
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
 
     regis_frm.grid(row=1, column=1, rowspan=3, columnspan=3, sticky=NSEW)
 
@@ -230,7 +208,7 @@ def Profile_Menu(user):
 
     # button
     Button(profile_menu, image=bookMenu_img,
-<<<<<<< HEAD
+
            command=Booking_Menu,bd=0).grid(row=2, column=0, columnspan=2)
     Button(profile_menu, image=ticketMenu_img,
            command=history,bd=0).grid(row=3, column=0, columnspan=2)
@@ -238,24 +216,12 @@ def Profile_Menu(user):
            command=Edit_profile,bd=0).grid(row=4, column=0, columnspan=2)
     Button(profile_menu, image=exitMenu_img,
            command=Exit_menu,bd=0).grid(row=5, column=0, columnspan=2)
-=======
-           command=Booking_Menu).grid(row=2, column=0, columnspan=2)
-    Button(profile_menu, image=ticketMenu_img,
-           command=history).grid(row=3, column=0, columnspan=2)
-    Button(profile_menu, image=editproMenu_img,
-           command=Edit_profile).grid(row=4, column=0, columnspan=2)
-    Button(profile_menu, image=exitMenu_img,
-           command=Exit_menu).grid(row=5, column=0, columnspan=2)
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
 
     profile_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky=NSEW)
 
 
 def Edit_profile():
-<<<<<<< HEAD
-=======
-    print("edit profile")
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
     global edit_profile, profi_fname, profi_lname, profi_phonenum, profi_birthdate, profi_province, profi_gender
     sql = "SELECT fname,lname,phonenum,birthdate,province,gender FROM customer WHERE email=?"
     cursor.execute(sql, [mail_info.get()])
@@ -307,15 +273,10 @@ def Edit_profile():
 
     # button
     Button(edit_profile, image=editBt_img,
-<<<<<<< HEAD
            command=Editable,bd=0).grid(row=7, column=0)
     Button(edit_profile, image=cancelBT_img,
            command=Cancel_edit,bd=0).grid(row=7, column=1)
-=======
-           command=Editable).grid(row=7, column=0)
-    Button(edit_profile, image=cancelBT_img,
-           command=Cancel_edit).grid(row=7, column=1)
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
 
     # set text from sql
     profi_fnameINFO.set(result_edt[0])
@@ -335,14 +296,9 @@ def Editable():
     profi_birthdate.config(state=NORMAL)
     profi_province.config(state=NORMAL)
     profi_gender.config(state=NORMAL)
-<<<<<<< HEAD
     Button(edit_profile, image=updateBt_img, command=Update_data,bd=0).grid(
         row=8, column=0, columnspan=2)
-=======
-    Button(edit_profile, image=updateBt_img, command=Update_data).grid(
-        row=8, column=0, columnspan=2)
 
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
 
 def Update_data():
     sql = """
@@ -358,10 +314,7 @@ def Update_data():
 
 
 def Booking_Menu():
-<<<<<<< HEAD
-=======
-    print("This booking menu")
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
     global booking_menu, province_select_sp, province_select_dp, date_button, date_text, date_show
     main.title("Vus Booking : Booking Menu")
     booking_menu = Frame(main, bg="#ffd3b4")
@@ -395,14 +348,8 @@ def Booking_Menu():
     province_select_dp['state'] = 'readonly'
     province_select_dp.grid(row=4, column=0, columnspan=2,
                             sticky='n', ipady=5, ipadx=5)
-
-<<<<<<< HEAD
     Label(booking_menu, text="Booking Tickets", bg="#ffd3b4", font="helvetica 16 bold", fg="black").grid(row=5, column=0, columnspan=2)
-=======
-    bkt_button = Radiobutton(booking_menu, text=tickets_list[1],
-                             value=1, bg="#ffd3b4", font="helvetica 16 bold", fg="black")
-    bkt_button.grid(row=5, column=0, columnspan=2)
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
 
     # select how many do you want to buy or booking tickets
     Label(booking_menu, text='Tickets : ', bg="#ffd3b4", font="helvetica 16 bold",
@@ -420,15 +367,10 @@ def Booking_Menu():
     date_show.grid(row=7, column=1, sticky=W, padx=20)
     # Button
     Button(booking_menu, image=exitMenu_img,
-<<<<<<< HEAD
            command=cancelbooking,bd=0).grid(row=8, column=0)
     Button(booking_menu, image=okBT_img,
            command=checkradiobutton,bd=0).grid(row=8, column=1)
-=======
-           command=cancelbooking).grid(row=8, column=0)
-    Button(booking_menu, image=okBT_img,
-           command=checkradiobutton).grid(row=8, column=1)
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
 
     booking_menu.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
 
@@ -476,14 +418,8 @@ def Booking_car():
                             sticky="NEWS", pady=15, padx=15)
 
     booking_car.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
-
-<<<<<<< HEAD
     Button(booking_car, image=cancelBT_img, command=cancel_trip,bd=0).grid(row=6, columnspan=2, column=0)
-=======
-    Button(booking_car, image=cancelBT_img, command=cancel_trip).grid(
-        row=6, columnspan=2, column=0)
 
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
 
 def Booking_seat():
     global booking_seat
@@ -515,15 +451,9 @@ def Booking_seat():
 
     Label(booking_seat, text="Total seat :", textvariable=txt_total,
           bg="#ffd3b4").grid(row=7, columnspan=5, column=0)
-<<<<<<< HEAD
     Button(booking_seat,image =cancelBT_img,bd=0, command=cancel_seat,).grid(row=9, column=0, columnspan=5)
     Button(booking_seat,image=okBT_img, command=check_total,bd=0).grid(row=8, column=0, columnspan=5)
-=======
-    Button(booking_seat, text="Cancel", command=cancel_seat,
-           width=8).grid(row=9, column=0, columnspan=5)
-    Button(booking_seat, text="Ok", width=8, command=check_total).grid(
-        row=8, column=0, columnspan=5)
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
     booking_seat.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
 
 
@@ -545,12 +475,9 @@ def Payment():
           font="helvetica 20").grid(row=4, column=0, columnspan=2, sticky=W, padx=15)
     Label(pay_ment, text="Normal economy class", bg="#ffd3b4",
           font="helvetica 20").grid(row=5, column=0, sticky=W, padx=15)
-<<<<<<< HEAD
     Label(pay_ment, text="("+listToString(seat_info)+")", bg="#ffd3b4",
           font="helvetica 20").grid(row=5, column=1, sticky=E, padx=15)
 
-=======
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
     Label(pay_ment, text="Price", bg="#ffd3b4", font="helvetica 20").grid(
         row=6, column=0, sticky=W, padx=15)
     Label(pay_ment, text=str(price_select) + "x" + str(tickets.get()),
@@ -562,12 +489,7 @@ def Payment():
           font="helvetica 20").grid(row=7, column=1, sticky=E, padx=15)
     Label(pay_ment, image=img_qr, text="(Please scan QRcode with LINE)", bg="#ffd3b4",
           compound=TOP, font="helvetica 20").grid(row=8, column=0, columnspan=2, pady=3)
-
-<<<<<<< HEAD
     Button(pay_ment, image=okBT_img, command=payment_success,bd=0).grid(
-=======
-    Button(pay_ment, image=okBT_img, command=payment_success).grid(
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
         row=9, column=0, columnspan=2)
     pay_ment.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
 
@@ -575,7 +497,6 @@ def Payment():
 def My_ticket():
     global my_ticket
     my_ticket = Frame(main, bg="#ffd3b4")
-<<<<<<< HEAD
     my_ticket.rowconfigure((0, 1, 2, 3), weight=1)
     my_ticket.columnconfigure((0, 1), weight=1)
 
@@ -597,12 +518,7 @@ def My_ticket():
     show_ticket.grid(row=0,column=0,columnspan=2)
 
     Button(my_ticket, image =okBT_img,command=cancel_my,bd=0).grid(row=3, column=0, columnspan=2)
-=======
-    my_ticket.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), weight=1)
-    my_ticket.columnconfigure((0, 1), weight=1)
 
-    Button(my_ticket, text="Cancel").grid(row=7, column=0, columnspan=2)
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
     my_ticket.grid(row=1, column=1, rowspan=3, columnspan=3, sticky='news')
 
 def checkradiobutton():
@@ -614,7 +530,6 @@ def checkradiobutton():
     elif province_select_sp.get() == province_select_dp.get():
         messagebox.showinfo("system", 'Please Select Different place.')
     elif tickets.get() == 0:
-<<<<<<< HEAD
         messagebox.showinfo("system", 'Please Enter the number of your tickets.')
     elif check_date.get() == "":
         messagebox.showinfo("system", 'Please Enter your date.')
@@ -627,12 +542,7 @@ def checkradiobutton():
             messagebox.showinfo("system", 'You can not time travel !!.')
         fake_rng()
         Booking_car()     
-=======
-        messagebox.showinfo(
-            "system", 'Please Enter the number of your tickets.')
-    elif check_date.get() == "":
-        messagebox.showinfo("system", 'Please Enter your date.')
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
     elif check_date.get() != "":
         fake_rng()
         Booking_car()
@@ -650,7 +560,6 @@ def Check_seat():
 
 
 def check_total():
-<<<<<<< HEAD
     global check_seat
     if tickets.get() == total:
         for i,des in enumerate(seat_list):
@@ -664,31 +573,17 @@ def check_total():
         Payment()
     else:
         messagebox.showwarning("System", "Please choose your seat equal your tickets")
-=======
-    booking_seat.destroy()
-    print(tickets.get())
-    print(total)
-    print("YOU")
-    if tickets.get() == total:
-        Payment()
-    else:
-        messagebox.showwarning(
-            "Peam", "Please choose your seat equal your tickets")
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
 
 
 def calendar():
     global calendar_frame, date, cal
-<<<<<<< HEAD
-=======
-    print("calendar")
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
     calendar_frame = Frame(main, bg="#ffd3b4")
     calendar_frame.rowconfigure((0, 1, 2, 3), weight=1)
     calendar_frame.columnconfigure((0, 1), weight=1)
     # calendar
     cal = Calendar(calendar_frame, selectmode='day',
-<<<<<<< HEAD
                    year=2021, month=5, day=20)
     cal.grid(row=0, column=0, columnspan=2, sticky='NEWS', pady=15, padx=15)
 
@@ -706,20 +601,7 @@ def listToString(s):
     str1 = " " 
     return (str1.join(seat_info))
         
-=======
-                   year=2021, month=5, day=16)
-    cal.grid(row=0, column=0, columnspan=2, sticky='NEWS', pady=15, padx=15)
 
-    # button
-    Button(calendar_frame, text="Get Date", command=grad_date).grid(
-        row=2, column=0, columnspan=2)
-    Button(calendar_frame, text="Cancel", command=cancel_cal).grid(
-        row=3, column=0, columnspan=2)
-
-    calendar_frame.grid(row=1, column=1, rowspan=3,
-                        columnspan=3, sticky='news')
-
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
 
 def payment_success():
     global seat_info
@@ -727,19 +609,12 @@ def payment_success():
             SET start =?,destination=?,time=?,total_price=?,seat=?
             WHERE email=?
         """
-<<<<<<< HEAD
     cursor.execute(sql, [province_select_sp.get(), province_select_dp.get(), time_select, total_price,listToString(seat_info), mail_gb])
     conn.commit()
     messagebox.showinfo("Vus Booking", "Payment Successful✅\nPlease check your ticket in Ticket History")
     seat_info = []
     cancelbooking()
-=======
-    cursor.execute(sql, [province_select_sp.get(
-    ), province_select_dp.get(), time_select, total_price, mail_gb])
-    conn.commit()
-    messagebox.showinfo(
-        "Vus Booking", "Payment Successful✅\nPlease check your ticket in Ticket History")
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
     pay_ment.destroy()
     Profile_Menu(mail_gb)
 
@@ -751,27 +626,14 @@ def fake_rng():
     if int(x[1]) % 2 == 0:
         number = 2
     else:
-<<<<<<< HEAD
-=======
-        print("odd")
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
         number = 4
 
 
 def trip_select(num):
-<<<<<<< HEAD
     global time_select, price_select
     time_select = time_list[num]
     price_select = price_list[num]
-=======
 
-    global time_select, price_select
-    print(num)
-    time_select = time_list[num]
-    price_select = price_list[num]
-    print(time_select)
-    print(price_select)
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
     booking_car.destroy()
     Booking_seat()
 
@@ -783,11 +645,9 @@ def distance():
 def history():
     My_ticket()
 
-<<<<<<< HEAD
 def cancel_my():
     my_ticket.destroy()
-=======
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
 
 def grad_date():
     global test_date
@@ -824,24 +684,10 @@ def cancel_regis():
 
 def cancel_seat():
     booking_seat.destroy()
-<<<<<<< HEAD
     Booking_car()
-
 
 def Exit_menu():
     main.destroy()
-
-=======
-    check_seat
-
-
-def Exit_menu():
-    print("Exit menu")
-    main.title("Vus Booking")
-    profile_menu.destroy()
-    pwd_ent.delete(0, END)
-    pwd_ent.focus_force()
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
 
 
 w = 600
@@ -866,11 +712,6 @@ seat_list_left = ["A1", "A2", "A3", "A4", "A5"]
 seat_list_right = ["C1", "C2", "C3", "C4", "C5"]
 seat_list_left_dis = ["B1", "B2", "B3", "B4", "B5"]
 seat_list_right_dis = ["D1", "D2", "D3", "D4", "D5"]
-<<<<<<< HEAD
-=======
-check_seat = [BooleanVar() for i in seat_list]
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
-
 check_seat = [BooleanVar() for i in seat_list]
 seat_info = []
 
@@ -909,14 +750,11 @@ regisBt_img = PhotoImage(file="image/register_bt.png").subsample(3, 3)
 updateBt_img = PhotoImage(file="image/update_bt.png").subsample(3, 3)
 editBt_img = PhotoImage(file="image/edit_bt.png").subsample(3, 3)
 cancelBT_img = PhotoImage(file="image/cancel_bt.png").subsample(3, 3)
-<<<<<<< HEAD
 get_date_img = PhotoImage(file="image/getdate_bt.png").subsample(3, 3)
 okBT_img = PhotoImage(file="image/ok_bt.png").subsample(3, 3)
 true = PhotoImage(file="image/true.png").subsample(6,6)
 catty = PhotoImage(file="image/catty.png").subsample(6,6)
-=======
-okBT_img = PhotoImage(file="image/ok_bt.png").subsample(3, 3)
->>>>>>> 0232e1de8df2b193b9543ce94d3fe824e2c8b118
+
 profi_fnameINFO = StringVar()
 profi_lnameINFO = StringVar()
 profi_phonenumINFO = StringVar()
